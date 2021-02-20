@@ -8,7 +8,7 @@
 
 
 //  load words 
-fetch('./words.json')
+fetch('https://dimitrov-radostin.github.io/typeTracker/words.json')
     .then(r => r.json())
     .then(words => {
         console.log(words)
