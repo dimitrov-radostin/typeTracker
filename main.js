@@ -8,9 +8,10 @@
 
 
 //  load words 
-fetch('/words.json')
+fetch('./words.json')
     .then(r => r.json())
     .then(words => {
+        console.log(words)
         numberOfWords = words.length
         words.unshift('start')
         // start from random position and make everything circular (remove the if words empty logic .. and th e shifting)
