@@ -7,6 +7,15 @@
 // - show more then just the next word
 
 
+let lettrePosition = 0
+let errors = 0
+let word 
+let tracking = false
+let results = document.getElementById('results')
+let writingField = document.getElementById('writingField')
+const TYPING_TIME = 60000 //in miliseconds 
+document.getElementById('timer').textContent = Math.floor(TYPING_TIME / 1000)
+
 //  load words 
 fetch('/words.json')
     .then(r => r.json())
@@ -15,17 +24,6 @@ fetch('/words.json')
         words.unshift('start')
         // start from random position and make everything circular (remove the if words empty logic .. and th e shifting)
         words = words.map(w => w + ' ')
-        // wordSetter(words)
-
-        let lettrePosition = 0
-        let errors = 0
-        let word 
-        let tracking = false
-        let results = document.getElementById('results')
-        let writingField = document.getElementById('writingField')
-        const TYPING_TIME = 20000 //in miliseconds 
-        document.getElementById('timer').textContent = Math.floor(TYPING_TIME / 1000)
-
 
         function startTracking() {
             tracking = true
