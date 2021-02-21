@@ -13,7 +13,7 @@ let word
 let tracking = false
 let results = document.getElementById('results')
 let writingField = document.getElementById('writingField')
-const TYPING_TIME = 6000 //in miliseconds 
+const TYPING_TIME = 60000 //in miliseconds 
 document.getElementById('timer').textContent = Math.floor(TYPING_TIME / 1000)
 
 textSourceType = 'fixed_words'
@@ -34,7 +34,7 @@ fetch(textSource)
                 .map((a) => ({sort: Math.random(), value: a}))
                 .sort((a, b) => a.sort - b.sort)
                 .map((a) => a.value)
-                .join(' ')
+                .join('')
                 typingData = 'start ' + typingData
             console.log(typingData)
             // add start keyword
