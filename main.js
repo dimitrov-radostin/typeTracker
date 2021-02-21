@@ -17,9 +17,10 @@ const TYPING_TIME = 60000 //in miliseconds
 document.getElementById('timer').textContent = Math.floor(TYPING_TIME / 1000)
 
 //  load words 
-fetch('/words.json')
+fetch('https://dimitrov-radostin.github.io/typeTracker/words.json')
     .then(r => r.json())
     .then(words => {
+        console.log(words)
         numberOfWords = words.length
         words.unshift('start')
         // start from random position and make everything circular (remove the if words empty logic .. and th e shifting)
