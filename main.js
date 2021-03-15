@@ -9,16 +9,17 @@
 let charactersTyped= 0
 let errors = 0
 let wordsTyped = 0
-let word 
+let word = ''
 let tracking = false
+let typingData = ''
 let results = document.getElementById('results')
 let writingField = document.getElementById('writingField')
 const TYPING_TIME = 60000 //in miliseconds 
 document.getElementById('timer').textContent = Math.floor(TYPING_TIME / 1000)
 
-textSourceType = 'fixed_words'
-textSource = 'https://dimitrov-radostin.github.io/typeTracker/most_popular_1000.json'
-// textSource = 'https://dimitrov-radostin.github.io/typeTracker/words.json'
+// textSourceType = 'fixed_words'
+// textSource = 'https://dimitrov-radostin.github.io/typeTracker/most_popular_1000.json'
+textSource = 'https://dimitrov-radostin.github.io/typeTracker/the_stranger.json'
 
 
 //  load 
@@ -27,10 +28,9 @@ fetch(textSource)
     .then(typingDataRaw => {
         console.log(typingDataRaw)
         // Parsing data
-        if(textSourceType === 'fixed_words'){
-        
+        if(typingDataRaw.type === 'words_in_array'){
             // get random position
-            typingData = typingDataRaw
+            typingData = typingDataRaw.data
                 .map((a) => ({sort: Math.random(), value: a}))
                 .sort((a, b) => a.sort - b.sort)
                 .map((a) => a.value)
@@ -38,6 +38,8 @@ fetch(textSource)
                 typingData = 'start ' + typingData
             console.log(typingData)
             // add start keyword
+        } else if(typingDataRaw.type === 'string'){
+            typingData = 'start ' + typingDataRaw.data
         }
 
 
@@ -70,21 +72,25 @@ fetch(textSource)
 
         function keyDownHandler(event) {
             let letter = typingData[charactersTyped]
+            // console.log(event.key, letter, typingData.charCodeAt(charactersTyped))
 
-            if(event.key === letter) {
+            if(event.key === letter || (event.key === 'Enter' && letter.charCodeAt(0) === 10)){
                 if (!tracking){      // could use another staring point (a button?)
                     startTracking()
                 }
-
-                if(letter === ' ' || charactersTyped === 0){
-                    newWordStartsAt = typingData.indexOf(' ', charactersTyped + 1)       // use str.slice(i).search(/re/)  for more word separators
+                if(letter === ' ' || letter.charCodeAt(0) === 10 || charactersTyped === 0){
+                    newWordStartsAt = 1 + charactersTyped + typingData.substring(charactersTyped + 1).search(/\s/)   // use str.slice(i).search(/re/)  for more word separators
                     // if -1 ..... handle with circular logic
 
-                    word = typingData.substring(charactersTyped, newWordStartsAt)
+                    word = charactersTyped === 0 
+                        ? typingData.substring(charactersTyped, newWordStartsAt)
+                        : typingData.substring(charactersTyped + 1, newWordStartsAt)
+                    // console.log('new word-- ', word)
+                    
                     wordsTyped += 1
                     typedWord = ''
-                    document.getElementById('givenWord').textContent = word
-                    document.getElementById('nextWord').textContent = typingData.substring(newWordStartsAt, newWordStartsAt + 30 - word.length )
+                    document.getElementById('givenWord').textContent = word.replace(/\n/g, String.fromCharCode('0x000023CE'))
+                    document.getElementById('nextWord').textContent = typingData.substring(newWordStartsAt, newWordStartsAt + 30 - word.length).replace(/\n/g, String.fromCharCode('0x000023CE'))
                 }
 
                 typedWord += letter
@@ -92,6 +98,7 @@ fetch(textSource)
                 writingField.children[1].textContent = ''
                 charactersTyped++
             }else {
+                console.log('error',event.key, letter, letter.charCodeAt(0))
                 if (writingField.children[1].textContent.length === 0){
                     errors++ 
                 }
