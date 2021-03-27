@@ -1,56 +1,73 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html lang="en-US">
-	<head>
-		<style>
-			body { font-family: monospace; padding-top: 30px; display: flex; align-items: center; flex-direction: column } 
-			#words {border: 1px solid blue}
-			#givenWord { font-size: 30px; margin-right: 12px }
-			#nextWord { font-size: 22px }
-			#writingField { display: flex; font-size: 34px; margin: 28px 0px 28px 0px }
-			#writingField>span#error { color: red }
-			#timerWrapper {font-size: 24; font-weight: bold}
-			#results { font-size: 35px; margin-top: 40px; display: flex; flex-direction: column }
-			#results>p { margin: 0 }
 
-		</style>
-	</head>
+<head>
+    <link rel="stylesheet" href="main.css">
+</head>
 
-	<body>
-		<section>
-			<p>Instructions:</p>
-			<ul>
-				<li>Start the exercise by typing the word "start". </li>
-				<li>Then type all the words and symbols you see in the field below.</li>
-				<li>If you make an error it will be highlighted in red and you would have to type the correct symbol (no need to delete your incorrect one).</li>
-				<li>Successive errors count as one.</li>
-				<li>Words are separeted by withspaces (space, new line or a tab).</li>
-				<li>The exercise ends after a fixed time - 60 seconds.</li>
-				<li>After that statistics are shown.</li>
-				<li>To play again refresh the page.</li>
-			</ul>
-			
-		</section>
-		<p id='words'>
-			<span id='givenWord'>start</span>		
-			<span id='nextWord'></span>
-		</p>
-		<p  id='writingField'>
-			<!-- Two span for what the user has writen correctly and for the error. 
+<body>
+    <div id="wrapper">
+
+        <div class="header">
+            <h1>Best typing expirence on the net!</h1>
+        </div>
+        <section id="instructions">
+            <p>Detailed Instructions:</p>
+            <ul>
+                <li>Start the exercise by typing the word "start". </li>
+                <li>Then type all the words and symbols you see in the field below.</li>
+                <li>If you make an error it will be highlighted in red and you would have to type the correct symbol (no need to delete your incorrect one).</li>
+                <li>Successive errors count as one.</li>
+                <li>Words are separeted by withspaces (space, new line or a tab).</li>
+                <li>The exercise ends after a fixed time - 60 seconds.</li>
+                <li>After that statistics are shown.</li>
+                <li>To play again refresh the page.</li>
+            </ul>
+
+        </section>
+        <section id="options">
+            <button>
+				Click here or type "start" to begin the game
+			</button>
+            <div name="text_source" id="text_source">
+                <p>Select text source: </p>
+                <input type="radio" name="text_source" id="test1" value="test1" checked> Test string <br>
+                <input type="radio" name="text_source" id="the_stranger" value="the_stranger"> Book extract <br>
+                <input type="radio" name="text_source" id="most_popular_1000" value="most_popular_1000"> Comman words <br>
+
+                <!-- <option value="test1">Test string</option>
+				<option value="the_stranger">Book extract</option>
+				<option value="most_popular_1000">Comman words</option> -->
+            </div>
+            <input type="number" name="typing_time" id="typing_time" value="60" min="0">
+        </section>
+        <section class="center">
+            <p id='words'>
+                <span id='givenWord'>start</span>
+                <span id='nextWord'></span>
+            </p>
+            <p id='writingField'>
+                <!-- Two span for what the user has writen correctly and for the error. 
 				Need to be on the same line otherwise a space is added between them. -->
-			<span id='incomleteWord'></span>
-			<span id='error'></span> 
-		</p>
-		<div id="timerWrapper">Time: 
-			<span id="timer">
-				60
-			</span>
-		</div>
-		<div id='results'>
-			<p> </p> 
-			<p> </p>
-			<p> </p>
-		</div >
-		<script src='./main.js'></script>
+                <span id='incomleteWord'></span>
+                <span id='error'></span>
+            </p>
+            <div id="timerWrapper">Time:
+                <span id="timer">
+                60
+        </span>
+            </div>
+            <div id='results'>
+                <p> </p>
+                <p> </p>
+                <p> </p>
+            </div>
 
-	</body>
+        </section>
+
+        <script src='./main.js'></script>
+
+    </div>
+</body>
+
 </html>

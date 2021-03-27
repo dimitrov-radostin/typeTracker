@@ -1,0 +1,65 @@
+body {
+    font-family: monospace;
+    padding-top: 30px;
+    margin: 0;
+    /* align-items: center;
+    flex-direction: column; */
+}
+
+#wrapper{
+    display: grid;
+    grid-template-areas:
+    'header header header'
+    'left center right';
+    /* grid-template-columns: 20% 55% 24%; */
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-gap: 2em;
+}
+.header {
+    display: grid;
+    justify-content: center;
+}
+
+.header { grid-area: header; }
+#options { grid-area: left; }
+#instructions { grid-area: right;}
+.center {grid-area: center}
+
+#words {
+    border: 1px solid blue
+}
+
+#givenWord {
+    font-size: 30px;
+    margin-right: 12px
+}
+
+#nextWord {
+    font-size: 22px
+}
+
+#writingField {
+    display: flex;
+    font-size: 34px;
+    margin: 28px 0px 28px 0px
+}
+
+#writingField>span#error {
+    color: red
+}
+
+#timerWrapper {
+    font-size: 24;
+    font-weight: bold
+}
+
+#results {
+    font-size: 35px;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column
+}
+
+#results>p {
+    margin: 0
+}
