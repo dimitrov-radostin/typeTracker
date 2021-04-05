@@ -9,42 +9,51 @@
     <div id="wrapper">
 
         <div class="header">
-            <h1>Best typing expirence on the net!</h1>
+            <h1>Best typing experience on the net!</h1>
         </div>
         <section id="instructions">
-            <p>Detailed Instructions:</p>
+            <h3>Detailed Instructions:</h3>
             <ul>
-                <li>Start the exercise by typing the word "start". </li>
+                <!-- <li>Start the exercise by typing the word "start". </li> -->
                 <li>Then type all the words and symbols you see in the field below.</li>
                 <li>If you make an error it will be highlighted in red and you would have to type the correct symbol (no need to delete your incorrect one).</li>
                 <li>Successive errors count as one.</li>
                 <li>Words are separeted by withspaces (space, new line or a tab).</li>
                 <li>The exercise ends after a fixed time - 60 seconds.</li>
                 <li>After that statistics are shown.</li>
-                <li>To play again refresh the page.</li>
+                <li>To play again refresh the page. ----- change soon</li>
             </ul>
 
         </section>
         <section id="options">
-            <button>
-				Click here or type "start" to begin the game
-			</button>
             <div name="text_source" id="text_source">
-                <p>Select text source: </p>
-                <input type="radio" name="text_source" id="test1" value="test1" checked> Test string <br>
-                <input type="radio" name="text_source" id="the_stranger" value="the_stranger"> Book extract <br>
-                <input type="radio" name="text_source" id="most_popular_1000" value="most_popular_1000"> Comman words <br>
+                <h3>Select text source: </h3>
+                <!-- <input type="radio" name="text_source" id="test1" value="test1.json" > Test string <br> -->
+                <input type="radio" name="text_source" id="the_stranger" value="the_stranger.json" checked> Book extract <br>
+                <input type="radio" name="text_source" id="most_popular_1000" value="most_popular_1000.json"> Comman words <br>
 
                 <!-- <option value="test1">Test string</option>
 				<option value="the_stranger">Book extract</option>
 				<option value="most_popular_1000">Comman words</option> -->
             </div>
-            <input type="number" name="typing_time" id="typing_time" value="60" min="0">
+            <div id="select_time">
+                <h3>Time: </h3>
+                <input type="number" name="typing_time" id="typing_time" value="60" min="0">
+            </div>
+            <button id="start_button">
+                <!-- Click here or type "start" to --> begin the game
+            </button>
         </section>
         <section class="center">
             <p id='words'>
-                <span id='givenWord'>start</span>
-                <span id='nextWord'></span>
+                <!-- <span id='written'>loading text source ...</span>
+                <span id="curentWord"></span>
+                <span id='nextWords'></span> -->
+                <span id="currentWord">still</span>
+                <span id="word2">loading</span>
+                <span id="word3">text</span>
+                <span id="word4">source</span>
+                <span id="word5">...</span>
             </p>
             <p id='writingField'>
                 <!-- Two span for what the user has writen correctly and for the error. 
@@ -52,10 +61,11 @@
                 <span id='incomleteWord'></span>
                 <span id='error'></span>
             </p>
-            <div id="timerWrapper">Time:
+
+            <div id="timerWrapper" class="hiddenTimer">Time:
                 <span id="timer">
                 60
-        </span>
+                </span>
             </div>
             <div id='results'>
                 <p> </p>
@@ -64,7 +74,7 @@
             </div>
 
         </section>
-
+        <div id="darkLayer" class="darkClass" style="display:none"></div>
         <script src='./main.js'></script>
 
     </div>

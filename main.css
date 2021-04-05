@@ -1,32 +1,125 @@
 body {
     font-family: monospace;
     padding-top: 30px;
-    margin: 0;
+    margin: 0px 10px;
     /* align-items: center;
     flex-direction: column; */
 }
 
-#wrapper{
+#wrapper {
     display: grid;
     grid-template-areas:
-    'header header header'
-    'left center right';
+        'header header header'
+        'left center right';
     /* grid-template-columns: 20% 55% 24%; */
     grid-template-columns: 1fr 3fr 1fr;
     grid-gap: 2em;
 }
+
 .header {
     display: grid;
     justify-content: center;
 }
 
-.header { grid-area: header; }
-#options { grid-area: left; }
-#instructions { grid-area: right;}
-.center {grid-area: center}
+.header {
+    grid-area: header;
+}
+
+#options {
+    grid-area: left;
+}
+
+#instructions {
+    grid-area: right;
+}
+
+.center {
+    grid-area: center;
+    z-index: 20;
+    background-color: white;
+    border-radius: 3px;
+    padding: 10px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center
+}
+
+#instructions>ul {
+    list-style-type: none;
+    padding: 0;
+
+}
+
+#instructions>ul>li {
+    margin-top: 1em;
+}
+
+#start_button {
+    margin: 0.4em 1em 0.4em 1em;
+    background-color: rgb(74 163 236);
+    border-radius: 5px;
+    font-weight: bold;
+    color: #ffffe6;
+    border: 0;
+    padding: 8px 12px;
+    min-width: 126px;
+}
+
+#select_time {
+    display: flex;
+    align-items: center;
+}
+
+#select_time>input {
+    margin-left: 1.5em;
+    height: 1.5em;
+    max-width: 4em;
+    border: 0;
+    background-color: rgba(236, 211, 211, 0.699);
+}
 
 #words {
-    border: 1px solid blue
+    /* border: 3px dashed blue; */
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center
+}
+
+#currentWord {
+    font-size: 45;
+    font-weight: 700;
+}
+
+#word2 {
+    font-size: 40;
+    opacity: 0.75;
+    font-weight: 400;
+    transform: scale(.9);
+}
+
+#word3 {
+    font-size: 30;
+    opacity: 0.6;
+    font-weight: 400;
+    transform: scale(.8);
+    transform-origin: top;
+}
+
+#word4 {
+    font-size: 25;
+    opacity: 0.50;
+    font-weight: 300;
+    transform: scale(.7);
+    transform-origin: top;
+}
+
+#word5 {
+    font-size: 22;
+    opacity: 0.45;
+    transform: scale(.6);
+    transform-origin: top;
 }
 
 #givenWord {
@@ -45,12 +138,22 @@ body {
 }
 
 #writingField>span#error {
-    color: red
+    color: #ec1313;
+}
+
+#writingField>span#incomleteWord {
+    color: #61941d;
+    margin-right: 3px;
 }
 
 #timerWrapper {
     font-size: 24;
-    font-weight: bold
+    font-weight: bold;
+}
+.hiddenTimer {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s linear 1500ms, opacity 1500ms;
 }
 
 #results {
@@ -62,4 +165,20 @@ body {
 
 #results>p {
     margin: 0
+}
+
+.darkClass {
+    background-color: #3b4655fb;
+    filter: alpha(opacity=70);
+    /* IE */
+    opacity: 0.7;
+    /* Safari, Opera */
+    -moz-opacity: 0.7;
+    /* FireFox */
+    z-index: 10;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
 }

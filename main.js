@@ -1,115 +1,150 @@
 // TO DO 
 // - fix the structure so not everything is in the Promise -- kind of
-// - timer stops at one !!!
-// - user to change time
 // - more sources: code, lyrics, custom (from user) ...
 // - ? use a button to start
-// - fade other info when in typing mode
 // show spaces as the special symbol
-// after timeout shold whole typed text with errors
+// after timeout show whole typed text with errors
 // start after typing strat not just the s 
 //    may be show some count down and then start
-// show text on changing source
-// css in a file and use grid!
-let charactersTyped = 0;
-let errors = 0;
-let wordsTyped = 0;
-let word = '';
-let tracking = false;
-let typedWord = '';
-let results = document.getElementById('results');
-let writingField = document.getElementById('writingField');
-const TYPING_TIME = 6000; //in miliseconds 
-document.getElementById('timer').textContent = Math.floor(TYPING_TIME / 1000).toString();
-// let textSource = 'https://dimitrov-radostin.github.io/typeTracker/most_popular_1000.json'
-// let textSource = 'https://dimitrov-radostin.github.io/typeTracker/the_stranger.json'
-let textSource = 'https://dimitrov-radostin.github.io/typeTracker/the_stranger.json';
-// ---------------------------------------------------------
-// document.querySelector('input[name="text_source"]:checked').value;
-fetch(textSource)
-    .then(r => r.json())
-    .then(parseData)
-    .then(typingData => {
-    function keyDownHandler(event) {
-        let letter = typingData[charactersTyped];
-        if (event.key === letter || (event.key === 'Enter' && letter.charCodeAt(0) === 10)) {
-            if (!tracking) { // could use another staring point (a button?)
-                startTracking(keyDownHandler);
-            }
-            if (letter === ' ' || letter.charCodeAt(0) === 10 || charactersTyped === 0) {
-                let length = typingData.length;
-                let newWordStartsAt = 1 + (charactersTyped % length) + typingData.substring(charactersTyped % length + 1).search(/\s/);
-                word = charactersTyped === 0
-                    ? typingData.substring(charactersTyped, newWordStartsAt)
-                    : typingData.substring(charactersTyped + 1, newWordStartsAt);
-                wordsTyped += 1;
-                typedWord = '';
-                document.getElementById('givenWord').textContent = word.replace(/\n/g, String.fromCharCode(0x000023CE));
-                document.getElementById('nextWord').textContent = typingData
-                    .substring(newWordStartsAt, newWordStartsAt + 30 - word.length)
-                    .replace(/\n/g, String.fromCharCode(0x000023CE));
-            }
-            typedWord += letter;
-            writingField.children[0].textContent = typedWord;
-            writingField.children[1].textContent = '';
-            charactersTyped++;
-        }
-        else if (event.key === 'Shift' || event.key === 'Shift') {
-            // dont count error
-        }
-        else {
-            console.log('error', event.key, letter, letter.charCodeAt(0));
-            if (writingField.children[1].textContent.length === 0) {
-                errors++;
-            }
-            writingField.children[1].textContent = event.key;
-        }
+// optimise to remeber parsed source when loading them so that on multiple chnages to 
+// https://developers.google.com/youtube/v3/docs/search/list
+// https://developers.google.com/youtube/player_parameters
+const IGNORE_AS_ERRORS = ['Shift', 'Ctrl'];
+// const WORD_SEPARETORS = [' ', '\n', '\t']
+const WORD_SEPARETORS_REGEXP = /\s/g;
+const ESCAPE_ON_SCREEN = [
+    { "ESCAPE_REGEXP": /\n/g, "SHOW": String.fromCharCode(9166) },
+    { "ESCAPE_REGEXP": / /g, "SHOW": String.fromCharCode(9251) }
+];
+const SOURCE_LOCATION = 'https://dimitrov-radostin.github.io/typeTracker/';
+let loading_data = false;
+let typingData = {
+    'string': '',
+    'array_words': [],
+    'array_words_map': [],
+    update: data => {
+        typingData.string = data;
+        typingData.array_words = data.split(WORD_SEPARETORS_REGEXP);
+        typingData.array_words_map = typingData.array_words
+            .map(word => word.length + 1)
+            .reduce((arr, currentWordLength) => [...arr, arr[arr.length - 1] + currentWordLength], [0]);
+        ESCAPE_ON_SCREEN.forEach(v => {
+            data = data.replace(v.ESCAPE_REGEXP, v.SHOW);
+        });
+        typingData.array_words = typingData.array_words
+            .map((w, i) => i !== typingData.array_words.length ?
+            w + data[typingData.array_words_map[i + 1] - 1] :
+            w + String.fromCharCode(9166));
     }
-    document.addEventListener('keydown', keyDownHandler);
+};
+let position = 0;
+let errors = [];
+// Load the default typing data on loading the page
+loadAndDisplayText(document.querySelector('input[name="text_source"]:checked').value);
+// Reload typing data on user selecting a new source
+document.getElementById("text_source")
+    .addEventListener('click', event => {
+    if (event.target && event.target.matches("input[type='radio']")) {
+        loadAndDisplayText(event.target.value);
+    }
 });
-function parseData(rawData) {
-    let typingData;
-    if (rawData.type === 'words_in_array') {
-        // shuffle the words
-        typingData = rawData.data
-            .map((a) => ({ sort: Math.random(), value: a }))
-            .sort((a, b) => a.sort - b.sort)
-            .map((a) => a.value)
-            .join('');
-        typingData = 'start ' + typingData;
+document.getElementById("start_button")
+    .addEventListener('click', startTracking);
+function startTracking() {
+    if (loading_data) {
+        alert("losho");
     }
-    else if (rawData.type === 'string') {
-        typingData = 'start ' + rawData.data;
-    }
-    return typingData;
+    let TYPING_TIME = 1000 * document.getElementById("typing_time").value;
+    document.addEventListener('keydown', keyDownHandler);
+    document.getElementById('start_button').blur();
+    document.getElementById("darkLayer").style.display = "";
+    document.getElementById("timer").textContent = (TYPING_TIME / 1000).toString();
+    document.getElementById("timerWrapper").classList.toggle("hiddenTimer");
+    let updateTimerInterval = startTimer(TYPING_TIME);
+    setTimeout(() => stopTracking(updateTimerInterval, keyDownHandler, TYPING_TIME), TYPING_TIME + 1);
 }
-function startTracking(keyDownHandler) {
-    tracking = true;
-    let updateTimerInterval = startTimer();
-    setTimeout(() => stopTracking(updateTimerInterval, keyDownHandler), TYPING_TIME + 1);
-}
-function stopTracking(updateTimerInterval, keyDownHandler) {
-    tracking = false;
+function stopTracking(updateTimerInterval, keyDownHandler, TYPING_TIME) {
+    console.log('Stop tracking, TYPING_TIME ', TYPING_TIME);
     document.removeEventListener('keydown', keyDownHandler);
-    results.children[0].textContent = `${wordsTyped} words`;
-    results.children[1].textContent = `${errors} errors`;
-    results.children[2].textContent = `${charactersTyped} characters`;
-    // add speed ? in [words/minute] or chars
+    document.getElementById("darkLayer").style.display = "none";
+    document.getElementById("timerWrapper").classList.toggle("hiddenTimer");
+    let resultsDiv = document.getElementById('results');
+    // also display the whole text typed with errors made
+    // resultsDiv.children[0].textContent = `${results.wordsTyped} words`
+    resultsDiv.children[1].textContent = `${position} characters`;
+    resultsDiv.children[2].textContent = `${errors.length} errors`;
+    console.log('errors at positions ', errors);
+    // resultsDiv.children[3].textContent = `speed: ${results.wordsTyped / (TYPING_TIME / 60000)} words per minute`
     clearInterval(updateTimerInterval);
 }
-function startTimer() {
+function startTimer(TYPING_TIME) {
     const startTime = Date.now();
-    let updateTimerInterval = setInterval(() => updateTimer(startTime), 1000);
+    let updateTimerInterval = setInterval(() => updateTimer(startTime, TYPING_TIME), 1000);
     return updateTimerInterval;
 }
-function updateTimer(startTime) {
+function updateTimer(startTime, TYPING_TIME) {
     const timer = document.getElementById('timer');
     let timePassed = (Date.now() - startTime);
     timer.textContent = Math.round((TYPING_TIME - timePassed) / 1000).toString();
 }
-/// timer stuff within a object
-// and just calling
-// timer.start
-// timer update? may be even update internaly
-// timer.stop
-// ? when  ot should be created on loading page on clicking on the start
+function displayText(position) {
+    let word_num = typingData.array_words_map.findIndex(v => v > position) - 1;
+    document.getElementById("currentWord").textContent = typingData.array_words[word_num];
+    document.getElementById("word2").textContent = typingData.array_words[word_num + 1];
+    document.getElementById("word3").textContent = typingData.array_words[word_num + 2];
+    document.getElementById("word4").textContent = typingData.array_words[word_num + 3];
+    document.getElementById("word5").textContent = typingData.array_words[word_num + 4];
+}
+function loadAndDisplayText(source) {
+    loading_data = true;
+    let sourcePath = SOURCE_LOCATION + source;
+    fetch(sourcePath)
+        .then(r => r.json())
+        .then(parseData)
+        .then(data => {
+        typingData.update(data);
+        console.log(data);
+        displayText(0);
+        loading_data = false;
+    })
+        .catch(e => { alert("omaza se \n" + e); });
+}
+function parseData(rawData) {
+    let typingData;
+    if (rawData.type === 'words_in_array') {
+        // shuffle the words
+        typingData = rawData
+            .data
+            .map((a) => ({ sort: Math.random(), value: a }))
+            .sort((a, b) => a.sort - b.sort)
+            .map((a) => a.value)
+            .join('');
+    }
+    else if (rawData.type === 'string') {
+        typingData = rawData.data;
+    }
+    return typingData;
+}
+let typedWord = '';
+function keyDownHandler(event) {
+    // REMOVE EVENT LISTNER FOR START KEYWORD
+    let letter = typingData.string[position];
+    let writingField = document.getElementById('writingField');
+    if (event.key === letter || (event.key === 'Enter' && letter.charCodeAt(0) === 10)) {
+        if (typingData.array_words_map.includes(position + 1)) {
+            typedWord = '';
+            displayText(position + 1);
+        }
+        typedWord += letter;
+        writingField.children[0].textContent = typedWord;
+        writingField.children[1].textContent = '';
+        position++;
+    }
+    else if (!IGNORE_AS_ERRORS.includes(event.key)) {
+        console.log('error', event.key, letter, letter.charCodeAt(0));
+        if (writingField.children[1].textContent.length === 0) {
+            errors.push(position);
+        }
+        writingField.children[1].textContent = event.key;
+    }
+}
