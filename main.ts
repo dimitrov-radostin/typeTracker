@@ -14,7 +14,6 @@
 
 
 const IGNORE_AS_ERRORS = ['Shift', 'Ctrl']
-// const WORD_SEPARETORS = [' ', '\n', '\t']
 const WORD_SEPARETORS_REGEXP = /\s/g
 const ESCAPE_ON_SCREEN = [
     { "ESCAPE_REGEXP": /\n/g, "SHOW": String.fromCharCode(9166) },
@@ -87,7 +86,6 @@ function startTracking() {
 }
 
 function stopTracking(updateTimerInterval, keyDownHandler, TYPING_TIME) {
-    console.log('Stop tracking, TYPING_TIME ', TYPING_TIME)
     document.removeEventListener('keydown', keyDownHandler)
     document.getElementById("darkLayer").style.display = "none"
     document.getElementById("timerWrapper").classList.toggle("hiddenTimer")

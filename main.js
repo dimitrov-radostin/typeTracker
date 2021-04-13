@@ -16,7 +16,8 @@ const ESCAPE_ON_SCREEN = [
     { "ESCAPE_REGEXP": /\n/g, "SHOW": String.fromCharCode(9166) },
     { "ESCAPE_REGEXP": / /g, "SHOW": String.fromCharCode(9251) }
 ];
-const SOURCE_LOCATION = 'https://dimitrov-radostin.github.io/typeTracker/';
+// const SOURCE_LOCATION = 'https://dimitrov-radostin.github.io/typeTracker/'
+const SOURCE_LOCATION = '/c/Users/Power/projects/typetracker';
 let loading_data = false;
 let typingData = {
     'string': '',
@@ -64,7 +65,6 @@ function startTracking() {
     setTimeout(() => stopTracking(updateTimerInterval, keyDownHandler, TYPING_TIME), TYPING_TIME + 1);
 }
 function stopTracking(updateTimerInterval, keyDownHandler, TYPING_TIME) {
-    console.log('Stop tracking, TYPING_TIME ', TYPING_TIME);
     document.removeEventListener('keydown', keyDownHandler);
     document.getElementById("darkLayer").style.display = "none";
     document.getElementById("timerWrapper").classList.toggle("hiddenTimer");

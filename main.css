@@ -139,6 +139,7 @@ body {
 
 #writingField>span#error {
     color: #ec1313;
+    font-weight: bolder;
 }
 
 #writingField>span#incomleteWord {
