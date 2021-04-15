@@ -55,6 +55,10 @@ let typingData = {
 let position = 0
 let errors = []
 
+
+const writingField = document.getElementById('writingField')
+const resultsDiv = document.getElementById('results')
+const timer = document.getElementById('timer')
 // Load the default typing data on loading the page
 loadAndDisplayText(document.querySelector('input[name="text_source"]:checked').value)
 
@@ -76,11 +80,25 @@ function startTracking() {
     }
     let TYPING_TIME = 1000 * document.getElementById("typing_time").value
 
+    position = 0  // or leave as is to continue typing from where you left - have to add total time or to count typed symbols in yet another variable
+
+    errors = []
+    typedWord = ''
+
+    displayText(position)
+    
     document.addEventListener('keydown', keyDownHandler)
     document.getElementById('start_button').blur()
     document.getElementById("darkLayer").style.display = ""
-    document.getElementById("timer").textContent = (TYPING_TIME / 1000).toString()
+    timer.textContent = (TYPING_TIME / 1000).toString()
     document.getElementById("timerWrapper").classList.toggle("hiddenTimer")
+
+    writingField.children[0].textContent = ''
+    writingField.children[1].textContent = ''
+    resultsDiv.children[0].textContent = '' 
+    resultsDiv.children[1].textContent = '' 
+    resultsDiv.children[2].textContent = ''
+    resultsDiv.children[3].textContent = ''
     let updateTimerInterval = startTimer(TYPING_TIME)
     setTimeout(() => stopTracking(updateTimerInterval, keyDownHandler, TYPING_TIME), TYPING_TIME + 1)
 }
@@ -89,7 +107,6 @@ function stopTracking(updateTimerInterval, keyDownHandler, TYPING_TIME) {
     document.removeEventListener('keydown', keyDownHandler)
     document.getElementById("darkLayer").style.display = "none"
     document.getElementById("timerWrapper").classList.toggle("hiddenTimer")
-    let resultsDiv = document.getElementById('results')
 
     // also display the whole text typed with errors made
 
@@ -109,7 +126,7 @@ function startTimer(TYPING_TIME) {
 }
 
 function updateTimer(startTime, TYPING_TIME) {
-    const timer = document.getElementById('timer')
+    // console.log()
     let timePassed = (Date.now() - startTime)
     timer.textContent = Math.round((TYPING_TIME - timePassed) / 1000).toString()
 }
@@ -159,7 +176,6 @@ let typedWord = ''
 function keyDownHandler(event) {
     // REMOVE EVENT LISTNER FOR START KEYWORD
     let letter = typingData.string[position]
-    let writingField = document.getElementById('writingField')
 
     if (event.key === letter || (event.key === 'Enter' && letter.charCodeAt(0) === 10)) {
         if (typingData.array_words_map.includes(position + 1)) {

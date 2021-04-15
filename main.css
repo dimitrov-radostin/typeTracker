@@ -134,6 +134,7 @@ body {
 #writingField {
     display: flex;
     font-size: 34px;
+    height: 34px;
     margin: 28px 0px 28px 0px
 }
 

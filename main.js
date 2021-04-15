@@ -10,14 +10,12 @@
 // https://developers.google.com/youtube/v3/docs/search/list
 // https://developers.google.com/youtube/player_parameters
 const IGNORE_AS_ERRORS = ['Shift', 'Ctrl'];
-// const WORD_SEPARETORS = [' ', '\n', '\t']
 const WORD_SEPARETORS_REGEXP = /\s/g;
 const ESCAPE_ON_SCREEN = [
     { "ESCAPE_REGEXP": /\n/g, "SHOW": String.fromCharCode(9166) },
     { "ESCAPE_REGEXP": / /g, "SHOW": String.fromCharCode(9251) }
 ];
-// const SOURCE_LOCATION = 'https://dimitrov-radostin.github.io/typeTracker/'
-const SOURCE_LOCATION = '/c/Users/Power/projects/typetracker';
+const SOURCE_LOCATION = 'https://dimitrov-radostin.github.io/typeTracker/';
 let loading_data = false;
 let typingData = {
     'string': '',
@@ -40,6 +38,9 @@ let typingData = {
 };
 let position = 0;
 let errors = [];
+const writingField = document.getElementById('writingField');
+const resultsDiv = document.getElementById('results');
+const timer = document.getElementById('timer');
 // Load the default typing data on loading the page
 loadAndDisplayText(document.querySelector('input[name="text_source"]:checked').value);
 // Reload typing data on user selecting a new source
@@ -56,11 +57,21 @@ function startTracking() {
         alert("losho");
     }
     let TYPING_TIME = 1000 * document.getElementById("typing_time").value;
+    position = 0; // or leave as is to continue typing from where you left - have to add total time or to count typed symbols in yet another variable
+    errors = [];
+    typedWord = '';
+    displayText(position);
     document.addEventListener('keydown', keyDownHandler);
     document.getElementById('start_button').blur();
     document.getElementById("darkLayer").style.display = "";
-    document.getElementById("timer").textContent = (TYPING_TIME / 1000).toString();
+    timer.textContent = (TYPING_TIME / 1000).toString();
     document.getElementById("timerWrapper").classList.toggle("hiddenTimer");
+    writingField.children[0].textContent = '';
+    writingField.children[1].textContent = '';
+    resultsDiv.children[0].textContent = '';
+    resultsDiv.children[1].textContent = '';
+    resultsDiv.children[2].textContent = '';
+    resultsDiv.children[3].textContent = '';
     let updateTimerInterval = startTimer(TYPING_TIME);
     setTimeout(() => stopTracking(updateTimerInterval, keyDownHandler, TYPING_TIME), TYPING_TIME + 1);
 }
@@ -68,7 +79,6 @@ function stopTracking(updateTimerInterval, keyDownHandler, TYPING_TIME) {
     document.removeEventListener('keydown', keyDownHandler);
     document.getElementById("darkLayer").style.display = "none";
     document.getElementById("timerWrapper").classList.toggle("hiddenTimer");
-    let resultsDiv = document.getElementById('results');
     // also display the whole text typed with errors made
     // resultsDiv.children[0].textContent = `${results.wordsTyped} words`
     resultsDiv.children[1].textContent = `${position} characters`;
@@ -83,7 +93,7 @@ function startTimer(TYPING_TIME) {
     return updateTimerInterval;
 }
 function updateTimer(startTime, TYPING_TIME) {
-    const timer = document.getElementById('timer');
+    // console.log()
     let timePassed = (Date.now() - startTime);
     timer.textContent = Math.round((TYPING_TIME - timePassed) / 1000).toString();
 }
@@ -129,7 +139,6 @@ let typedWord = '';
 function keyDownHandler(event) {
     // REMOVE EVENT LISTNER FOR START KEYWORD
     let letter = typingData.string[position];
-    let writingField = document.getElementById('writingField');
     if (event.key === letter || (event.key === 'Enter' && letter.charCodeAt(0) === 10)) {
         if (typingData.array_words_map.includes(position + 1)) {
             typedWord = '';

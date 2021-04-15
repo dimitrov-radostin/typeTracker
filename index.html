@@ -29,7 +29,7 @@
                 <h3>Select text source: </h3>
                 <!-- <input type="radio" name="text_source" id="test1" value="test1.json" > Test string <br> -->
                 <input type="radio" name="text_source" id="the_stranger" value="the_stranger.json" checked> Book extract 1 <br>
-                <input type="radio" name="text_source" id=""the_wheel_of_time" value="the_wheel_of_time.json"> Book extract 2 <br>
+                <input type="radio" name="text_source" id="the_wheel_of_time" value="the_wheel_of_time.json"> Book extract 2 <br>
                 <input type="radio" name="text_source" id="most_popular_1000" value="most_popular_1000.json"> Comman words <br>
 
                 <!-- <option value="test1">Test string</option>
@@ -46,21 +46,18 @@
         </section>
         <section class="center">
             <p id='words'>
-                <!-- <span id='written'>loading text source ...</span>
-                <span id="curentWord"></span>
-                <span id='nextWords'></span> -->
                 <span id="currentWord">still</span>
                 <span id="word2">loading</span>
                 <span id="word3">text</span>
                 <span id="word4">source</span>
                 <span id="word5">...</span>
             </p>
-            <p id='writingField'>
+            <div id='writingField'>
                 <!-- Two span for what the user has writen correctly and for the error. 
 				Need to be on the same line otherwise a space is added between them. -->
                 <span id='incomleteWord'></span>
                 <span id='error'></span>
-            </p>
+            </div>
 
             <div id="timerWrapper" class="hiddenTimer">Time:
                 <span id="timer">
@@ -68,6 +65,7 @@
                 </span>
             </div>
             <div id='results'>
+                <p> </p>
                 <p> </p>
                 <p> </p>
                 <p> </p>
