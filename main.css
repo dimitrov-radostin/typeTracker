@@ -29,9 +29,7 @@ body {
     grid-area: left;
 }
 
-#instructions {
-    grid-area: right;
-}
+
 
 .center {
     grid-area: center;
@@ -45,14 +43,23 @@ body {
     align-items: center
 }
 
+#instructions {
+    grid-area: right;
+}
+
 #instructions>ul {
     list-style-type: none;
     padding: 0;
-
 }
 
 #instructions>ul>li {
     margin-top: 1em;
+}
+
+@media screen and (max-width: 800px) {
+    #instructions {
+        display: none !important;
+    }
 }
 
 #start_button {
